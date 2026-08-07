@@ -1,0 +1,6 @@
+{
+  "name": "Recipe & Nutrition Assistant",
+  "description": "RAG-powered Recipe Search, Nutrition Analyzer, 7-Day Meal Planner, and Ingredient Substitution Assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_LLM_API"]
+}
