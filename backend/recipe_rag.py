@@ -236,11 +236,35 @@ class RecipeRAG:
     def _generate_search_summary(self, query: str, recipes: List[Dict[str, Any]], filters: Dict[str, Any]) -> str:
         """Generate human-readable summary of search results."""
         if not recipes:
-            return f"No recipes found matching '{query}' with the selected dietary filters. Try broadening your criteria."
+            return f"No recipes found matching '{query}' with the selected dietary filters. Try broadening your criteria or trying a different cuisine."
+        
+        # Analyze the result set
+        total_recipes = len(recipes)
+        dietary_str = f" fitting your {filters.get('dietary')} requirements" if filters.get('dietary') else ""
         
         top_recipe = recipes[0]
-        dietary_str = f" for {filters.get('dietary')}" if filters.get('dietary') else ""
-        return f"Found {len(recipes)} top-rated culinary matches{dietary_str}. Featured recommendation: '{top_recipe.get('name')}' ({top_recipe.get('calories')} kcal, {top_recipe.get('protein_g', 20)}g protein)."
+        runner_up = recipes[1] if total_recipes > 1 else None
+        
+        avg_calories = sum(r.get('calories', 0) for r in recipes) // total_recipes
+        avg_protein = round(sum(r.get('protein_g', 0) for r in recipes) / total_recipes, 1)
+        
+        # Paragraph 1: Overview
+        p1 = f"I've searched through our local database and found {total_recipes} culinary matches for '{query}'{dietary_str}. "
+        p1 += f"The selected recipes offer a great nutritional balance, averaging {avg_calories} kcal and {avg_protein}g of protein per meal. "
+        p1 += "These options have been mathematically ranked using our offline semantic vector engine to closely match your intent."
+        
+        # Paragraph 2: Top Recommendation
+        p2 = f"My top recommendation is the **{top_recipe.get('name')}**. "
+        p2 += f"This dish takes about {top_recipe.get('cook_time', 0) + top_recipe.get('prep_time', 0)} minutes to prepare and is highly rated ({top_recipe.get('rating', 4.0)}/5.0). "
+        p2 += f"It's an excellent choice if you're aiming for a balanced meal, providing {top_recipe.get('calories', 0)} calories alongside {top_recipe.get('protein_g', 0)}g of protein. "
+        p2 += f"{top_recipe.get('description', '')}"
+        
+        # Paragraph 3: Alternatives
+        p3 = ""
+        if runner_up:
+            p3 = f"If you're looking for an alternative, the **{runner_up.get('name')}** is another fantastic choice from our {runner_up.get('cuisine', 'international')} cuisine selection, which offers a slightly different flavor profile."
+            
+        return f"{p1}\n\n{p2}\n\n{p3}".strip()
 
 
 if __name__ == "__main__":
