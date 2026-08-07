@@ -24,7 +24,7 @@ export class Constants {
 
   static readonly DEFAULT_CALORIE_TARGET = 2000;
 
-  static readonly API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
+  static readonly API_BASE_URL = ((import.meta as any).env?.VITE_API_URL || '') + '/api';
 }
 
 export const DIETARY_OPTIONS = Constants.DIETARY_OPTIONS;

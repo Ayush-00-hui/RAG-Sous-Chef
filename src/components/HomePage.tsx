@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Sparkles,
-  Zap,
-  ShieldCheck,
-  Search,
-  BookOpen,
-  Award,
-  ArrowRight,
-  SlidersHorizontal,
-} from 'lucide-react';
+import { Sparkles, Zap, Search, BookOpen, ArrowRight, SlidersHorizontal } from 'lucide-react';
 import { SearchBar } from './SearchBar';
 import { RecipeCard } from './RecipeCard';
 import { useRecipeContext } from '../hooks/useRecipeContext';
@@ -41,142 +32,147 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateMealPlan }) => {
   };
 
   return (
-    <div className="space-y-12 pb-16">
+    <div className="space-y-10 pb-16 bg-gray-50 min-h-screen">
       {/* Hero Section */}
-      <section className="relative pt-12 pb-8 px-4 sm:px-6 lg:px-8 text-center space-y-6 max-w-5xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">
-          <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" /> AI Vector RAG Recipe & Nutrition Engine
-        </div>
+      <section className="relative bg-white border-b border-gray-200 pt-12 pb-10 px-4 sm:px-6 lg:px-8 text-center space-y-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-pulse" /> Offline Vector RAG · Recipe & Nutrition Engine
+          </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black text-slate-100 tracking-tight leading-tight">
-          Precision Culinary Intelligence & <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400">Macro RAG Engine</span>
-        </h1>
+          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+            Your Personal{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500">
+              Culinary AI Assistant
+            </span>
+          </h1>
 
-        <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-          Ask complex culinary prompts, discover verified macro profiles, generate instant dietary ingredient substitutions, and build 7-day personalized meal plans.
-        </p>
+          <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mt-3">
+            Search 5000+ recipes with semantic AI, discover macro profiles, get ingredient swaps, and build 7-day meal plans — all 100% offline.
+          </p>
 
-        {/* Search Bar Component */}
-        <div className="pt-4 max-w-3xl mx-auto">
-          <SearchBar />
-        </div>
+          {/* Search Bar */}
+          <div className="pt-5 max-w-2xl mx-auto">
+            <SearchBar />
+          </div>
 
-        {/* Dietary Shortcut Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-          {['high-protein', 'vegan', 'keto', 'gluten-free', 'low-carb'].map((tag) => {
-            const active = (searchFilters.dietary || []).includes(tag);
-            return (
-              <button
-                key={tag}
-                onClick={() => handleFilterClick(tag)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold capitalize transition-all ${
-                  active
-                    ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
-                }`}
-              >
-                {active ? '✓ ' : '+ '}
-                {tag}
-              </button>
-            );
-          })}
+          {/* Dietary Shortcut Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
+            {['high-protein', 'vegan', 'keto', 'gluten-free', 'low-carb'].map((tag) => {
+              const active = (searchFilters.dietary || []).includes(tag);
+              return (
+                <button
+                  key={tag}
+                  onClick={() => handleFilterClick(tag)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold capitalize transition-all border ${
+                    active
+                      ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-200'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-300 hover:text-emerald-700'
+                  }`}
+                >
+                  {active ? '✓ ' : '+ '}{tag}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* RAG Synthesis Summary Box (if present) */}
+      {/* RAG Synthesis Summary Box */}
       {aiSummary && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-slate-900 via-emerald-950/30 to-slate-900 border border-emerald-500/30 rounded-3xl p-5 sm:p-6 flex items-start gap-4 shadow-xl">
-            <div className="p-2.5 bg-emerald-500/20 rounded-2xl border border-emerald-500/30 text-emerald-400 shrink-0">
-              <Zap className="w-5 h-5" />
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-sky-50 border border-emerald-200 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+            <div className="p-2 bg-emerald-100 rounded-xl text-emerald-600 shrink-0">
+              <Zap className="w-4 h-4" />
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-emerald-300 uppercase tracking-wider">
-                RAG Vector Search Synthesis
+              <h3 className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
+                RAG Search Analysis
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{aiSummary}</p>
+              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{aiSummary}</p>
             </div>
           </div>
         </section>
       )}
 
       {/* Stats Bar */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-900/80 border border-slate-800/80 rounded-3xl p-6 text-center">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
           <div>
-            <div className="text-2xl font-black text-emerald-400">10,000+</div>
-            <div className="text-xs text-slate-400 font-medium">RAG Indexed Recipes</div>
+            <div className="text-2xl font-black text-emerald-600">5,000+</div>
+            <div className="text-xs text-gray-400 font-medium">Indexed Recipes</div>
           </div>
           <div>
-            <div className="text-2xl font-black text-sky-400">99.4%</div>
-            <div className="text-xs text-slate-400 font-medium">Macro Precision Accuracy</div>
+            <div className="text-2xl font-black text-sky-600">Semantic</div>
+            <div className="text-xs text-gray-400 font-medium">Vector Search</div>
           </div>
           <div>
-            <div className="text-2xl font-black text-purple-400">Instant</div>
-            <div className="text-xs text-slate-400 font-medium">Allergen & Ingredient Swaps</div>
+            <div className="text-2xl font-black text-violet-600">Instant</div>
+            <div className="text-xs text-gray-400 font-medium">Ingredient Swaps</div>
           </div>
           <div>
-            <div className="text-2xl font-black text-amber-400">7-Day</div>
-            <div className="text-xs text-slate-400 font-medium">Automated Meal Plans</div>
+            <div className="text-2xl font-black text-amber-600">7-Day</div>
+            <div className="text-xs text-gray-400 font-medium">Meal Planning</div>
           </div>
         </div>
       </section>
 
-      {/* Main Recipe Grid Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      {/* Recipe Grid Section */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-gray-200">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-100 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-emerald-400" />
-              {searchQuery ? `Search Results for "${searchQuery}"` : 'Recommended Culinary Discoveries'}
+            <h2 className="text-xl font-extrabold text-gray-900 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-emerald-500" />
+              {searchQuery ? `Results for "${searchQuery}"` : 'Recommended Discoveries'}
             </h2>
-            <p className="text-xs text-slate-400">Showing {recipes.length} verified recipes with full nutritional facts.</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {recipes.length} verified recipes with full nutritional facts
+            </p>
           </div>
-
           <button
             onClick={onNavigateMealPlan}
-            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 flex items-center gap-2 transition-colors"
+            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-200 flex items-center gap-2 transition-colors"
           >
-            Create 7-Day Meal Plan <ArrowRight className="w-4 h-4 text-emerald-400" />
+            Create 7-Day Meal Plan <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Loading Spinner State */}
+        {/* Loading */}
         {loading && (
           <div className="py-20 text-center space-y-3">
-            <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs text-slate-400 font-medium">Querying Vector RAG Database...</p>
+            <div className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs text-gray-400">Querying Offline RAG Engine...</p>
           </div>
         )}
 
-        {/* Error State */}
+        {/* Error */}
         {error && !loading && (
-          <div className="p-4 bg-rose-950/40 border border-rose-800/60 rounded-2xl text-center text-rose-300 text-xs">
+          <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-center text-rose-600 text-sm">
             {error}
           </div>
         )}
 
-        {/* Empty State */}
+        {/* Empty */}
         {!loading && !error && recipes.length === 0 && (
-          <div className="py-16 text-center space-y-3 bg-slate-900/50 border border-slate-800/80 rounded-3xl p-8">
-            <Search className="w-10 h-10 text-slate-600 mx-auto" />
-            <h3 className="text-base font-bold text-slate-300">No matching recipes found</h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              Try loosening search filters or asking a broader query like "healthy chicken" or "keto dinner".
+          <div className="py-16 text-center bg-white border border-gray-200 rounded-2xl p-8 space-y-3">
+            <Search className="w-10 h-10 text-gray-300 mx-auto" />
+            <h3 className="text-base font-bold text-gray-700">No matching recipes found</h3>
+            <p className="text-xs text-gray-400 max-w-sm mx-auto">
+              Try a different query or broaden your filters.
             </p>
           </div>
         )}
 
-        {/* Recipe Cards Grid */}
+        {/* Recipe Cards */}
         {!loading && recipes.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {recipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={recipe}
                 isFavorite={isFavorite(recipe.id)}
                 onToggleFavorite={toggleFavorite}
-                onSelect={setSelectedRecipe}
+                onSelectRecipe={setSelectedRecipe}
               />
             ))}
           </div>
