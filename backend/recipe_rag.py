@@ -16,7 +16,11 @@ from recipe_database import RecipeDatabase
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-HAS_GENAI = False
+try:
+    import google.generativeai as genai
+    HAS_GENAI = True
+except ImportError:
+    HAS_GENAI = False
 
 try:
     from langchain.prompts import PromptTemplate
@@ -38,8 +42,14 @@ class RecipeRAG:
             self.db.load_recipes()
             self.db.create_embeddings()
 
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         self.genai_client = None
+        self.llm_model = None
+
+        if HAS_GENAI and self.api_key:
+            genai.configure(api_key=self.api_key)
+            self.llm_model = genai.GenerativeModel('gemini-3.5-flash')
+            logger.info("Initialized Gemini LLM (gemini-3.5-flash)")
 
     def generate_query_embedding(self, query: str) -> np.ndarray:
         """Generate embedding vector for user search query."""
@@ -237,6 +247,17 @@ class RecipeRAG:
         """Generate human-readable summary of search results."""
         if not recipes:
             return f"No recipes found matching '{query}' with the selected dietary filters. Try broadening your criteria or trying a different cuisine."
+        
+        if self.llm_model:
+            try:
+                context = "\n".join([f"- {r.get('name')}: {r.get('description')} (Calories: {r.get('calories', 'N/A')}, Protein: {r.get('protein_g', 'N/A')}g, Prep Time: {r.get('prep_time', 0)} mins, Cook Time: {r.get('cook_time', 0)} mins)" for r in recipes])
+                prompt = f"The user searched for: '{query}'. Based on the following retrieved recipes from our database, provide a short, helpful, and engaging summary of the best options. Do not hallucinate external recipes or information not provided here.\n\nRecipes:\n{context}"
+                response = self.llm_model.generate_content(prompt)
+                if response.text:
+                    return response.text.strip()
+            except Exception as e:
+                logger.error(f"Error generating summary with Gemini LLM: {e}")
+                # Fallback to heuristic generation
         
         # Analyze the result set
         total_recipes = len(recipes)
