@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Clock, Flame, ChefHat, Users, CheckCircle, Repeat, Sparkles, Bookmark } from 'lucide-react';
 import { Recipe, NutritionFacts, SubstitutionResponse } from '../types';
 import { NutritionChart } from './NutritionChart';
+import { API_BASE_URL } from '../utils/constants';
 
 interface RecipeDetailModalProps {
   recipe: Recipe | null;
@@ -31,7 +32,7 @@ export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
   useEffect(() => {
     if (!recipe) return;
 
-    fetch(`/api/recipe/${recipe.id}`)
+    fetch(`${API_BASE_URL}/recipe/${recipe.id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.nutrition_facts) setNutritionFacts(data.nutrition_facts);
@@ -45,7 +46,7 @@ export const RecipeDetailModal: React.FC<RecipeDetailModalProps> = ({
     setSubLoading(true);
     setActiveTab('substitutions');
 
-    fetch(`/api/substitutions/${encodeURIComponent(ingredient)}?recipe_id=${recipe.id}`)
+    fetch(`${API_BASE_URL}/substitutions/${encodeURIComponent(ingredient)}?recipe_id=${recipe.id}`)
       .then((res) => res.json())
       .then((data) => {
         setSubstitutionData(data);

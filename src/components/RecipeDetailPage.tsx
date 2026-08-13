@@ -4,6 +4,7 @@ import {
   CheckCircle, Repeat, Sparkles, AlertTriangle, Zap
 } from 'lucide-react';
 import { Recipe, NutritionFacts, SubstitutionResponse } from '../types';
+import { API_BASE_URL } from '../utils/constants';
 
 interface RecipeDetailPageProps {
   recipe: Recipe;
@@ -29,7 +30,7 @@ export const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetch(`/api/recipe/${recipe.id}`)
+    fetch(`${API_BASE_URL}/recipe/${recipe.id}`)
       .then(res => res.json())
       .then(data => {
         if (data.nutrition_facts) setNutritionFacts(data.nutrition_facts);
@@ -42,7 +43,7 @@ export const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     setSelectedIngredient(ingredient);
     setSubLoading(true);
     setActiveTab('substitutions');
-    fetch(`/api/substitutions/${encodeURIComponent(ingredient)}?recipe_id=${recipe.id}`)
+    fetch(`${API_BASE_URL}/substitutions/${encodeURIComponent(ingredient)}?recipe_id=${recipe.id}`)
       .then(res => res.json())
       .then(data => { setSubstitutionData(data); setSubLoading(false); })
       .catch(() => setSubLoading(false));

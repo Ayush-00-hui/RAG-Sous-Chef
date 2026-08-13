@@ -8,6 +8,7 @@ Provides RESTful endpoints for AI vector search, nutrition analysis, ingredient 
 import os
 import logging
 from typing import List, Dict, Any, Optional
+from contextlib import asynccontextmanager
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
@@ -29,11 +30,30 @@ logging.basicConfig(
 )
 logger = logging.getLogger("recipe_rag_api")
 
+# Shared Core Service Singletons (Initialized in lifespan)
+recipe_db = None
+recipe_rag = None
+nutrition_analyzer = None
+meal_planner = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global recipe_db, recipe_rag, nutrition_analyzer, meal_planner
+    logger.info("Initializing ML models and database... This may take a moment.")
+    recipe_db = RecipeDatabase()
+    recipe_rag = RecipeRAG(recipe_db)
+    nutrition_analyzer = NutritionAnalyzer(recipe_db)
+    meal_planner = MealPlanner(recipe_db)
+    logger.info("Initialization complete!")
+    yield
+    logger.info("Shutting down...")
+
 # Initialize FastAPI App
 app = FastAPI(
     title="Recipe & Nutrition Assistant API",
     description="RAG-powered Recipe Search, Nutrition Analyzer, and Meal Planner API",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Enable CORS for Vercel frontend and local development
@@ -44,12 +64,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Shared Core Service Singletons
-recipe_db = RecipeDatabase()
-recipe_rag = RecipeRAG(recipe_db)
-nutrition_analyzer = NutritionAnalyzer(recipe_db)
-meal_planner = MealPlanner(recipe_db)
 
 # In-memory session store for user preferences and favorites (production database fallback)
 USER_PREFERENCES_STORE: Dict[str, Dict[str, Any]] = {
