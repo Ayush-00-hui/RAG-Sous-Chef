@@ -3,6 +3,7 @@ import { Sparkles, Zap, Search, BookOpen, ArrowRight, SlidersHorizontal } from '
 import { SearchBar } from './SearchBar';
 import { RecipeCard } from './RecipeCard';
 import { useRecipeContext } from '../hooks/useRecipeContext';
+import { motion } from 'motion/react';
 
 interface HomePageProps {
   onNavigateMealPlan: () => void;
@@ -34,52 +35,75 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateMealPlan }) => {
   return (
     <div className="space-y-10 pb-16 bg-gray-50 min-h-screen">
       {/* Hero Section / Chat UI */}
-      <section className={`relative transition-all duration-500 ease-in-out ${searchQuery ? 'pt-8 pb-4 bg-white/50 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-100' : 'pt-24 pb-16 px-4 sm:px-6 lg:px-8 text-center bg-white'}`}>
+      <section className={`relative transition-all duration-500 ease-in-out ${searchQuery ? 'pt-8 pb-4 bg-white sticky top-0 z-40 border-b border-gray-100' : 'pt-24 pb-16 px-4 sm:px-6 lg:px-8 text-center bg-white'}`}>
         <div className="max-w-4xl mx-auto space-y-6">
           {!searchQuery && (
-            <div className="space-y-6 animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
-                <Sparkles className="w-4 h-4 text-emerald-500 animate-pulse" /> Powered by Offline Vector RAG
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="space-y-6"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded bg-gray-100 text-gray-700 text-xs sm:text-sm font-bold tracking-tight mb-2">
+                Powered by Offline Vector RAG
               </div>
 
-              <h1 className="text-5xl sm:text-6xl font-black text-gray-900 tracking-tight leading-tight">
-                Your AI-Powered <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">
-                  Sous-Chef
-                </span>
-              </h1>
+              <motion.h1 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                className="text-5xl sm:text-6xl font-black text-gray-900 tracking-tight leading-tight"
+              >
+                Your <span style={{ fontFamily: 'var(--font-serif)' }} className="italic font-normal text-gray-800">AI-Powered</span> <br />
+                <span style={{ fontFamily: 'var(--font-script)' }} className="text-7xl sm:text-8xl text-emerald-600 font-normal block mt-2">Sous-Chef</span>
+              </motion.h1>
 
-              <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed font-medium"
+              >
                 Ask me anything about healthy meals. I use semantic search to find the perfect recipes and calculate your exact nutritional macros offline.
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
           )}
 
           {/* Search Bar Chat Input */}
-          <div className="px-4">
+          <motion.div 
+            initial={searchQuery ? false : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="px-4"
+          >
             <SearchBar />
-          </div>
+          </motion.div>
 
           {/* Dietary Shortcut Pills (Only show on home) */}
           {!searchQuery && (
-            <div className="flex flex-wrap items-center justify-center gap-2.5 pt-6 pb-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="flex flex-wrap items-center justify-center gap-2 pt-6 pb-4"
+            >
               {['high-protein', 'vegan', 'keto', 'gluten-free', 'low-carb'].map((tag) => {
                 const active = (searchFilters.dietary || []).includes(tag);
                 return (
                   <button
                     key={tag}
                     onClick={() => handleFilterClick(tag)}
-                    className={`px-4 py-2 rounded-full text-xs sm:text-sm font-bold capitalize transition-all border ${
+                    className={`px-4 py-1.5 rounded text-sm font-bold capitalize transition-colors border ${
                       active
-                        ? 'bg-emerald-500 text-white border-emerald-500 shadow-md shadow-emerald-200'
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/50'
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-gray-900'
                     }`}
                   >
                     {tag}
                   </button>
                 );
               })}
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
@@ -89,20 +113,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateMealPlan }) => {
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 animate-fade-in-up">
           <div className="flex gap-4 sm:gap-6 items-start">
             {/* AI Avatar */}
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 shrink-0 border border-emerald-200 z-10">
-              <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded bg-gray-900 flex items-center justify-center shrink-0 z-10">
+              <Zap className="w-5 h-5 text-white" />
             </div>
             
             {/* Chat Bubble */}
-            <div className="flex-1 bg-white rounded-3xl rounded-tl-sm shadow-xl shadow-gray-200/50 p-6 sm:p-8 border border-gray-100 relative group transition-all hover:shadow-2xl">
+            <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-7 relative transition-all">
               {/* Little speech triangle */}
-              <div className="absolute top-5 -left-3 w-6 h-6 bg-white border-b border-l border-gray-100 transform rotate-45 rounded-sm"></div>
+              <div className="absolute top-4 -left-2.5 w-5 h-5 bg-white border-b border-l border-gray-200 transform rotate-45 rounded-sm"></div>
               
-              <h3 className="text-xs font-bold text-emerald-600 mb-3 flex items-center gap-2 uppercase tracking-widest">
-                <Zap className="w-4 h-4" /> NutriChef AI Analysis
+              <h3 className="text-xs font-bold text-gray-900 mb-3 uppercase tracking-widest">
+                Analysis
               </h3>
               
-              <div className="prose prose-emerald prose-sm sm:prose-base max-w-none text-gray-800 leading-relaxed font-medium">
+              <div className="prose prose-sm sm:prose-base max-w-none text-gray-800 leading-relaxed font-medium">
                 {aiSummary.split('\n').map((line, i) => (
                   <p key={i} className="mb-2 last:mb-0">{line}</p>
                 ))}
@@ -117,13 +141,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigateMealPlan }) => {
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { value: '5k+', label: 'Recipes Indexed', sub: 'via RAG Vector DB', color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100' },
-              { value: '384-D', label: 'Embeddings', sub: 'all-MiniLM-L6-v2', color: 'text-teal-600', bg: 'bg-teal-50 border-teal-100' },
-              { value: '20+', label: 'Diet Swaps', sub: 'vegan, keto, GF', color: 'text-sky-600', bg: 'bg-sky-50 border-sky-100' },
-              { value: '7-Day', label: 'Meal Planner', sub: 'with shopping list', color: 'text-indigo-600', bg: 'bg-indigo-50 border-indigo-100' },
+              { value: '5k+', label: 'Recipes Indexed', sub: 'via RAG Vector DB' },
+              { value: '384-D', label: 'Embeddings', sub: 'all-MiniLM-L6-v2' },
+              { value: '20+', label: 'Diet Swaps', sub: 'vegan, keto, GF' },
+              { value: '7-Day', label: 'Meal Planner', sub: 'with shopping list' },
             ].map(s => (
-              <div key={s.value} className={`bg-white border rounded-3xl p-5 text-center shadow-sm hover:shadow-md transition-shadow ${s.bg}`}>
-                <div className={`text-3xl font-black tracking-tight ${s.color}`}>{s.value}</div>
+              <div key={s.value} className="bg-white border border-gray-200 rounded-lg p-5 text-center shadow-sm">
+                <div className="text-3xl font-black tracking-tight text-gray-900">{s.value}</div>
                 <div className="text-sm font-bold text-gray-800 mt-2">{s.label}</div>
                 <div className="text-[11px] text-gray-500 mt-1 uppercase tracking-wider font-semibold">{s.sub}</div>
               </div>

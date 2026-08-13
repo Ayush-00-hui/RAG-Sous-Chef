@@ -1,16 +1,42 @@
 services:
+  # ── Backend: FastAPI ──────────────────────────────────────────────────────
   - type: web
-    name: recipe-rag-api
+    name: rag-sous-chef-api
     env: python
     plan: free
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: cd backend && uvicorn app:app --host 0.0.0.0 --port 8000
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: postgres
+          name: rag-sous-chef-db
           property: connectionString
-      - key: OPENAI_API_KEY
-      - key: OPENAI_API_KEY
-    databases:
-      - name: postgres
+      - key: GOOGLE_API_KEY
+        sync: false          # manually set in Render dashboard
+      - key: USDA_API_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: FAISS_INDEX_PATH
+        value: ./faiss_index
+      - key: CORS_ORIGINS
+        sync: false          # set after frontend URL is known
+
+  # ── Frontend: React + Vite ────────────────────────────────────────────────
+  - type: web
+    name: rag-sous-chef-frontend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false          # set to your backend URL after backend is deployed
+
+# ── PostgreSQL Database ───────────────────────────────────────────────────────
+databases:
+  - name: rag-sous-chef-db
+    plan: free

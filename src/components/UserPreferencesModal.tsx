@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Save, ShieldAlert, Sliders, Flame, Check } from 'lucide-react';
 import { useRecipeContext } from '../hooks/useRecipeContext';
 import { DIETARY_OPTIONS } from '../utils/constants';
@@ -16,6 +16,15 @@ export const UserPreferencesModal: React.FC<UserPreferencesModalProps> = ({ isOp
   const [allergyInput, setAllergyInput] = useState<string>('');
   const [allergies, setAllergies] = useState<string[]>(userPreferences.allergies || []);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setCalorieTarget(userPreferences.calorie_target || 2000);
+      setRestrictions(userPreferences.dietary_restrictions || []);
+      setAllergies(userPreferences.allergies || []);
+      setSaved(false);
+    }
+  }, [isOpen, userPreferences]);
 
   if (!isOpen) return null;
 

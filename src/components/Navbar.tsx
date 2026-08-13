@@ -1,5 +1,6 @@
 import React from 'react';
 import { UtensilsCrossed, Calendar, Bookmark, Sliders, Repeat, Search } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface NavbarProps {
   activeTab: 'search' | 'planner' | 'swaps' | 'favorites';
@@ -15,62 +16,61 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenPreferences,
 }) => {
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-40 bg-white/40 backdrop-blur-xl border-b border-white/30 shadow-[0_4px_30px_rgba(0,0,0,0.05)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-        {/* Logo & Brand */}
-        <div
-          onClick={() => setActiveTab('search')}
-          className="flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-200 group-hover:scale-105 transition-transform">
-            <UtensilsCrossed className="w-4.5 h-4.5" />
-          </div>
-          <div>
-            <div className="font-black text-base text-gray-900 tracking-tight leading-tight">NutriChef RAG</div>
-            <div className="text-[10px] text-gray-400 font-medium hidden sm:block">AI Recipe & Nutrition Assistant</div>
-          </div>
-        </div>
+        {/* Left Spacer to perfectly center the nav items */}
+        <div className="flex-1" />
 
-        {/* Center Nav Links */}
-        <nav className="flex items-center gap-1">
+        {/* Center Nav Links - Gooey Nav */}
+        <nav className="flex items-center justify-center gap-1 bg-white/50 backdrop-blur-md border border-white/60 p-1 rounded-xl shadow-sm">
           {[
             { id: 'search', label: 'Recipes', icon: Search },
             { id: 'planner', label: '7-Day Planner', icon: Calendar },
             { id: 'swaps', label: 'Substitutions', icon: Repeat },
             { id: 'favorites', label: 'Favorites', icon: Bookmark },
-          ].map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              id={`nav-tab-${id}`}
-              onClick={() => setActiveTab(id as any)}
-              className={`relative flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                activeTab === id
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                  : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span className="hidden md:inline">{label}</span>
-              {id === 'favorites' && favoritesCount > 0 && (
-                <span className="ml-0.5 px-1.5 py-0.5 text-[10px] font-bold bg-emerald-500 text-white rounded-full">
-                  {favoritesCount}
-                </span>
-              )}
-            </button>
-          ))}
+          ].map(({ id, label, icon: Icon }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                id={`nav-tab-${id}`}
+                onClick={() => setActiveTab(id as any)}
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors z-10 ${
+                  isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="gooey-nav-pill"
+                    className="absolute inset-0 bg-white rounded-md shadow-sm border border-gray-100/50 z-[-1]"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <Icon className="w-4 h-4" />
+                <span className="hidden md:inline">{label}</span>
+                {id === 'favorites' && favoritesCount > 0 && (
+                  <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold bg-gray-900 text-white rounded">
+                    {favoritesCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </nav>
 
-        {/* Preferences Button */}
-        <button
-          id="btn-open-preferences"
-          onClick={onOpenPreferences}
-          className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all"
-          title="Dietary Preferences & Allergy Settings"
-        >
-          <Sliders className="w-4 h-4 text-emerald-600" />
-          <span className="hidden lg:inline">Preferences</span>
-        </button>
+        {/* Right Section / Preferences Button */}
+        <div className="flex-1 flex justify-end">
+          <button
+            id="btn-open-preferences"
+            onClick={onOpenPreferences}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-900/90 backdrop-blur-sm text-white hover:bg-gray-800 transition-colors shadow-sm"
+            title="Dietary Preferences"
+          >
+            <Sliders className="w-4 h-4" />
+            <span className="hidden lg:inline">Preferences</span>
+          </button>
+        </div>
       </div>
     </header>
   );
